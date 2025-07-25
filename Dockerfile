@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:20-alpine
 
 # pass N8N_VERSION Argument while building or use default
 ARG N8N_VERSION=1.39.1
@@ -10,13 +10,15 @@ RUN apk add --update graphicsmagick tzdata
 USER root
 
 # Install n8n and also all temporary packages
-# it needs to build it correctly.
 RUN apk --update add --virtual build-dependencies python3 build-base && \
 	npm_config_user=root npm install --location=global n8n@${N8N_VERSION} && \
 	apk del build-dependencies
 
-# Specifying work directory
+# Working directory
 WORKDIR /data
+
+# Expose the default n8n port
+EXPOSE 5678
 
 # define execution entrypoint
 CMD ["n8n"]
